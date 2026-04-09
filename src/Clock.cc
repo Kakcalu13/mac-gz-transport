@@ -78,12 +78,15 @@ NetworkClock::Implementation::Implementation(const std::string& _topicName,
     : clockTimeNS(std::chrono::nanoseconds::zero()),
       clockTimeBase(_timeBase)
 {
-  if (!node.Subscribe(
-          _topicName, &Implementation::OnClockMessageReceived, this))
-  {
-    std::cerr << "Could not subscribe to [" << _topicName << "] topic\n";
-  }
-  this->pub = node.Advertise<gz::msgs::Clock>(_topicName);
+// Temporarily disable clock subscribe on macOS / newer protobuf
+// if (!node.Subscribe(
+//         _topicName, &Implementation::OnClockMessageReceived, this))
+// {
+//   std::cerr << "Could not subscribe to [" << _topicName << "] topic\n";
+// }
+
+this->pub = node.Advertise(_topicName,
+    std::string(gz::msgs::Clock().GetTypeName()));
 }
 
 //////////////////////////////////////////////////

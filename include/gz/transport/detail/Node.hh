@@ -32,7 +32,7 @@ namespace ignition
         const std::string &_topic,
         const AdvertiseMessageOptions &_options)
     {
-      return this->Advertise(_topic, MessageT().GetTypeName(), _options);
+      return this->Advertise(_topic, std::string(MessageT().GetTypeName()), _options);
     }
 
     //////////////////////////////////////////////////
@@ -548,8 +548,8 @@ namespace ignition
 
       // If the responser is within my process.
       IRepHandlerPtr repHandler;
-      if (this->Shared()->repliers.FirstHandler(fullyQualifiedTopic,
-        _request.GetTypeName(), _reply.GetTypeName(), repHandler))
+      if (this->Shared()->repliers.FirstHandler(fullyQualifiedTopic, std::string(std::string(_request.GetTypeName())),
+        std::string(std::string(_reply.GetTypeName())), repHandler))
       {
         // There is a responser in my process, let's use it.
         _result = repHandler->RunLocalCallback(_request, _reply);
@@ -565,7 +565,7 @@ namespace ignition
       if (this->Shared()->TopicPublishers(fullyQualifiedTopic, addresses))
       {
         this->Shared()->SendPendingRemoteReqs(fullyQualifiedTopic,
-          _request.GetTypeName(), _reply.GetTypeName());
+          std::string(_request.GetTypeName()), std::string(_reply.GetTypeName()));
       }
       else
       {

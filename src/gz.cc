@@ -163,7 +163,7 @@ extern "C" void IGNITION_TRANSPORT_VISIBLE cmdTopicPub(const char *_topic,
   {
     // Create the node and advertise the topic
     Node node;
-    auto pub = node.Advertise(_topic, msg->GetTypeName());
+    auto pub = node.Advertise(_topic, std::string(msg->GetTypeName()));
 
     // Publish the message
     if (pub)
@@ -237,7 +237,7 @@ extern "C" void IGNITION_TRANSPORT_VISIBLE cmdServiceReq(const char *_service,
   bool result;
 
   // Request the service.
-  bool executed = node.Request(_service, *req, _timeout, *rep, result);
+  bool executed = node.Request(std::string(_service), *req, _timeout, *rep, result);
   if (executed)
   {
     if (result)

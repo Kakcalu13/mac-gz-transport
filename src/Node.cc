@@ -280,7 +280,7 @@ bool Node::Publisher::Publish(const ProtoMsg &_msg)
   const std::string &publisherMsgType = this->dataPtr->publisher.MsgTypeName();
 
   // Check that the msg type matches the topic type previously advertised.
-  if (publisherMsgType != _msg.GetTypeName())
+  if (publisherMsgType != std::string(_msg.GetTypeName()))
   {
     std::cerr << "Node::Publisher::Publish() Type mismatch.\n"
               << "\t* Type advertised: "
@@ -423,7 +423,7 @@ bool Node::Publisher::Publish(const ProtoMsg &_msg)
     };
 
     if (!this->dataPtr->shared->Publish(this->dataPtr->publisher.Topic(),
-          msgBuffer, msgSize, myDeallocator, _msg.GetTypeName()))
+          msgBuffer, msgSize, myDeallocator, std::string(_msg.GetTypeName())))
     {
       return false;
     }
