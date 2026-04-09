@@ -192,7 +192,7 @@ namespace ignition
       // Documentation inherited.
       public: virtual std::string ReqTypeName() const
       {
-        return std::string(Req().GetTypeName());;
+        return std::string(Rep().GetTypeName());
       }
 
       // Documentation inherited.

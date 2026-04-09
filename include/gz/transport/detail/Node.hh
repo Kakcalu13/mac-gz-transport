@@ -551,7 +551,7 @@ namespace ignition
       // If the responser is within my process.
       IRepHandlerPtr repHandler;
       if (this->Shared()->repliers.FirstHandler(fullyQualifiedTopic, std::string(_request.GetTypeName()),
-        std::string(_reply.GetTypeName()),, repHandler))
+        std::string(_reply.GetTypeName()), repHandler))
       {
         // There is a responser in my process, let's use it.
         _result = repHandler->RunLocalCallback(_request, _reply);
