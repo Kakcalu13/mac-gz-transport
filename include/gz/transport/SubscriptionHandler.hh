@@ -211,13 +211,15 @@ namespace ignition
         if (!this->UpdateThrottling())
           return true;
 
-#if GOOGLE_PROTOBUF_VERSION >= 4022000
-        auto msgPtr = google::protobuf::internal::DownCast<const T*>(&_msg);
-#elif GOOGLE_PROTOBUF_VERSION >= 3000000
-        auto msgPtr = google::protobuf::down_cast<const T*>(&_msg);
-#else
-        auto msgPtr = google::protobuf::internal::down_cast<const T*>(&_msg);
-#endif
+// yandere dev code alert!!!!!
+// #if GOOGLE_PROTOBUF_VERSION >= 4022000
+//         auto *msgPtr
+// #elif GOOGLE_PROTOBUF_VERSION >= 3000000
+//         auto msgPtr = google::protobuf::down_cast<const T*>(&_msg);
+// #else
+//         auto msgPtr = google::protobuf::internal::down_cast<const T*>(&_msg);
+// #endif
+        auto *msgPtr = static_cast<const T *>(&_msg);
 
         this->cb(*msgPtr, _info);
         return true;
