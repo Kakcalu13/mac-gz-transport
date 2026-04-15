@@ -236,7 +236,11 @@ NodeShared::NodeShared()
 
   // Initialize the 0MQ objects.
   if (!this->InitializeSockets())
+  {
+    std::cerr << "NodeShared: InitializeSockets() failed - discovery services "
+              << "will NOT be started. Service advertise/request will fail.\n";
     return;
+  }
 
   if (this->verbose)
   {
@@ -623,6 +627,7 @@ void NodeShared::RecvControlUpdate()
 //////////////////////////////////////////////////
 void NodeShared::RecvSrvRequest()
 {
+  std::cerr << "NodeShared::RecvSrvRequest() CALLED\n";
   if (verbose)
     std::cout << "Message received requesting a service call" << std::endl;
 
@@ -726,6 +731,15 @@ void NodeShared::RecvSrvRequest()
 
     hasHandler =
       this->repliers.FirstHandler(topic, reqType, repType, repHandler);
+
+    std::cerr << "RecvSrvRequest: topic='" << topic << "' reqType='"
+              << reqType << "' repType='" << repType
+              << "' hasHandler=" << hasHandler << "\n";
+    if (!hasHandler)
+    {
+      std::cerr << "  repliers registered:\n";
+      this->repliers.PrintTopics();
+    }
   }
 
   // Get the REP handler.
@@ -937,12 +951,17 @@ void NodeShared::RecvSrvResponse()
 void NodeShared::SendPendingRemoteReqs(const std::string &_topic,
   const std::string &_reqType, const std::string &_repType)
 {
+  std::cerr << "NodeShared::SendPendingRemoteReqs topic=" << _topic
+            << " reqType=" << _reqType << " repType=" << _repType << "\n";
   std::string responserAddr;
   std::string responserId;
   SrvAddresses_M addresses;
   this->dataPtr->srvDiscovery->Publishers(_topic, addresses);
   if (addresses.empty())
+  {
+    std::cerr << "  -> addresses empty!\n";
     return;
+  }
 
   // Find a publisher that offers this service with a particular pair of REQ/REP
   // types.
@@ -1322,10 +1341,12 @@ void NodeShared::OnEndRegistration(const MessagePublisher &_pub)
 //////////////////////////////////////////////////
 bool NodeShared::InitializeSockets()
 {
+  std::cerr << "NodeShared::InitializeSockets() starting...\n";
   try
   {
     // Set the hostname's ip address.
     this->hostAddr = this->dataPtr->msgDiscovery->HostAddr();
+    std::cerr << "NodeShared::InitializeSockets() hostAddr=" << this->hostAddr << "\n";
 
     // Publisher socket listening in a random port.
     std::string anyTcpEp = "tcp://" + this->hostAddr + ":*";
@@ -1477,12 +1498,13 @@ bool NodeShared::InitializeSockets()
   }
   catch(const zmq::error_t& ze)
   {
-    std::cerr << "InitializeSockets() Error: " << ze.what() << std::endl;
+    std::cerr << "InitializeSockets() ZMQ Error: " << ze.what() << std::endl;
     std::cerr << "Ignition Transport has not been correctly initialized"
               << std::endl;
     return false;
   }
 
+  std::cerr << "NodeShared::InitializeSockets() succeeded.\n";
   return true;
 }
 
