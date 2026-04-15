@@ -32,7 +32,7 @@ namespace ignition
         const std::string &_topic,
         const AdvertiseMessageOptions &_options)
     {
-      return this->Advertise(_topic, std::string(MessageT().GetTypeName()), _options);
+      return this->Advertise(std::string(_topic), std::string(MessageT().GetTypeName()), _options);
     }
 
     //////////////////////////////////////////////////
@@ -49,7 +49,7 @@ namespace ignition
         (*_cb)(_internalMsg);
       };
 
-      return this->Subscribe<MessageT>(_topic, f, _opts);
+      return this->Subscribe<MessageT>(std::string(_topic), f, _opts);
     }
 
     //////////////////////////////////////////////////
@@ -66,7 +66,7 @@ namespace ignition
         cb(_internalMsg);
       };
 
-      return this->Subscribe<MessageT>(_topic, f, _opts);
+      return this->Subscribe<MessageT>(std::string(_topic), f, _opts);
     }
 
     //////////////////////////////////////////////////
@@ -85,7 +85,7 @@ namespace ignition
         cb(_internalMsg);
       };
 
-      return this->Subscribe<MessageT>(_topic, f, _opts);
+      return this->Subscribe<MessageT>(std::string(_topic), f, _opts);
     }
 
     //////////////////////////////////////////////////
@@ -102,7 +102,7 @@ namespace ignition
         (*_cb)(_internalMsg, _internalInfo);
       };
 
-      return this->Subscribe<MessageT>(_topic, f, _opts);
+      return this->Subscribe<MessageT>(std::string(_topic), f, _opts);
     }
 
     //////////////////////////////////////////////////
@@ -161,7 +161,7 @@ namespace ignition
         cb(_internalMsg, _internalInfo);
       };
 
-      return this->Subscribe<MessageT>(_topic, f, _opts);
+      return this->Subscribe<MessageT>(std::string(_topic), f, _opts);
     }
 
     //////////////////////////////////////////////////
@@ -171,22 +171,22 @@ namespace ignition
       bool(*_cb)(const RequestT &_request, ReplyT &_reply),
       const AdvertiseServiceOptions &_options)
     {
-      // Dev Note: This overload of Advertise(~) is necessary so that the
+      // Dev Note: This overload of Advertise(std::string(~) is necessary so that the
       // compiler can correctly infer the template arguments. We cannot rely
       // on the compiler to implicitly cast the function pointer to a
       // std::function object, because the compiler cannot infer the template
       // parameters T1 and T2 from the signature of the function pointer that
-      // gets passed to Advertise(~).
+      // gets passed to Advertise(std::string(~).
 
       // We create a std::function object so that we can explicitly call the
-      // baseline overload of Advertise(~).
+      // baseline overload of Advertise(std::string(~).
       std::function<bool(const RequestT&, ReplyT&)> f =
         [_cb](const RequestT &_internalReq, ReplyT &_internalRep)
       {
         return (*_cb)(_internalReq, _internalRep);
       };
 
-      return this->Advertise(_topic, f, _options);
+      return this->Advertise(std::string(_topic), f, _options);
     }
 
     //////////////////////////////////////////////////
@@ -201,7 +201,7 @@ namespace ignition
       {
         return (*_cb)(_internalRep);
       };
-      return this->Advertise(_topic, f, _options);
+      return this->Advertise(std::string(_topic), f, _options);
     }
 
     //////////////////////////////////////////////////
@@ -219,7 +219,7 @@ namespace ignition
         return true;
       };
 
-      return this->Advertise(_topic, f, _options);
+      return this->Advertise(std::string(_topic), f, _options);
     }
 
     //////////////////////////////////////////////////
@@ -271,7 +271,7 @@ namespace ignition
 
       if (!this->Shared()->AdvertisePublisher(publisher))
       {
-        std::cerr << "Node::Advertise(): Error advertising service ["
+        std::cerr << "Node::Advertise(std::string(): Error advertising service ["
                   << topic
                   << "]. Did you forget to start the discovery service?"
                   << std::endl;
@@ -293,7 +293,7 @@ namespace ignition
       {
         return (_cb)(_internalRep);
       };
-      return this->Advertise(_topic, f, _options);
+      return this->Advertise(std::string(_topic), f, _options);
     }
 
     //////////////////////////////////////////////////
@@ -311,7 +311,7 @@ namespace ignition
         return true;
       };
 
-      return this->Advertise(_topic, f, _options);
+      return this->Advertise(std::string(_topic), f, _options);
     }
 
     //////////////////////////////////////////////////
@@ -329,7 +329,7 @@ namespace ignition
         return (_obj->*_cb)(_internalReq, _internalRep);
       };
 
-      return this->Advertise(_topic, f, _options);
+      return this->Advertise(std::string(_topic), f, _options);
     }
 
     //////////////////////////////////////////////////
@@ -346,7 +346,7 @@ namespace ignition
         return (_obj->*_cb)(_internalRep);
       };
 
-      return this->Advertise(_topic, f, _options);
+      return this->Advertise(std::string(_topic), f, _options);
     }
 
     //////////////////////////////////////////////////
@@ -366,7 +366,7 @@ namespace ignition
         return true;
       };
 
-      return this->Advertise(_topic, f, _options);
+      return this->Advertise(std::string(_topic), f, _options);
     }
 
     //////////////////////////////////////////////////
@@ -382,7 +382,7 @@ namespace ignition
         (*_cb)(_internalRep, _internalResult);
       };
 
-      return this->Request<RequestT, ReplyT>(_topic, _request, f);
+      return this->Request<RequestT, ReplyT>(std::string(_topic), _request, f);
     }
 
     //////////////////////////////////////////////////
@@ -392,7 +392,7 @@ namespace ignition
       void(*_cb)(const ReplyT &_reply, const bool _result))
     {
       msgs::Empty req;
-      return this->Request(_topic, req, _cb);
+      return this->Request(std::string(_topic), req, _cb);
     }
 
     //////////////////////////////////////////////////
@@ -465,7 +465,7 @@ namespace ignition
           // Discover the service responser.
           if (!this->Shared()->DiscoverService(fullyQualifiedTopic))
           {
-            std::cerr << "Node::Request(): Error discovering service ["
+            std::cerr << "Node::Request<std::string(): Error discovering service ["
                       << topic
                       << "]. Did you forget to start the discovery service?"
                       << std::endl;
@@ -484,7 +484,7 @@ namespace ignition
       std::function<void(const ReplyT &_reply, const bool _result)> &_cb)
     {
       msgs::Empty req;
-      return this->Request(_topic, req, _cb);
+      return this->Request(std::string(_topic), req, _cb);
     }
 
     //////////////////////////////////////////////////
@@ -503,7 +503,7 @@ namespace ignition
         cb(_internalRep, _internalResult);
       };
 
-      return this->Request<RequestT, ReplyT>(_topic, _request, f);
+      return this->Request<RequestT, ReplyT>(std::string(_topic), _request, f);
     }
 
     //////////////////////////////////////////////////
@@ -514,7 +514,7 @@ namespace ignition
       ClassT *_obj)
     {
       msgs::Empty req;
-      return this->Request(_topic, req, _cb, _obj);
+      return this->Request(std::string(_topic), req, _cb, _obj);
     }
 
     //////////////////////////////////////////////////
@@ -574,7 +574,7 @@ namespace ignition
         // Discover the service responser.
         if (!this->Shared()->DiscoverService(fullyQualifiedTopic))
         {
-          std::cerr << "Node::Request(): Error discovering service ["
+          std::cerr << "Node::Request<std::string(): Error discovering service ["
                     << topic
                     << "]. Did you forget to start the discovery service?"
                     << std::endl;
@@ -599,7 +599,7 @@ namespace ignition
       // Parse the response.
       if (!_reply.ParseFromString(reqHandlerPtr->Response()))
       {
-        std::cerr << "Node::Request(): Error Parsing the response"
+        std::cerr << "Node::Request<std::string(): Error Parsing the response"
                   << std::endl;
         _result = false;
         return true;
@@ -618,7 +618,7 @@ namespace ignition
       bool &_result)
     {
       msgs::Empty req;
-      return this->Request(_topic, req, _timeout, _reply, _result);
+      return this->Request(std::string(_topic), req, _timeout, _reply, _result);
     }
 
     //////////////////////////////////////////////////
@@ -627,7 +627,7 @@ namespace ignition
         const std::string &_topic,
         const RequestT &_request)
     {
-      // This callback is here for reusing the regular Request() call with
+      // This callback is here for reusing the regular Request<std::string() call with
       // input and output parameters.
       std::function<void(const gz::msgs::Empty &, const bool)> f =
         [](const gz::msgs::Empty &, const bool)
