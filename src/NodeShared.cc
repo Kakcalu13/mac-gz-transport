@@ -627,7 +627,6 @@ void NodeShared::RecvControlUpdate()
 //////////////////////////////////////////////////
 void NodeShared::RecvSrvRequest()
 {
-  std::cerr << "NodeShared::RecvSrvRequest() CALLED\n";
   if (verbose)
     std::cout << "Message received requesting a service call" << std::endl;
 
@@ -732,9 +731,6 @@ void NodeShared::RecvSrvRequest()
     hasHandler =
       this->repliers.FirstHandler(topic, reqType, repType, repHandler);
 
-    std::cerr << "RecvSrvRequest: topic='" << topic << "' reqType='"
-              << reqType << "' repType='" << repType
-              << "' hasHandler=" << hasHandler << "\n";
     if (!hasHandler)
     {
       std::cerr << "  repliers registered:\n";
@@ -951,8 +947,6 @@ void NodeShared::RecvSrvResponse()
 void NodeShared::SendPendingRemoteReqs(const std::string &_topic,
   const std::string &_reqType, const std::string &_repType)
 {
-  std::cerr << "NodeShared::SendPendingRemoteReqs topic=" << _topic
-            << " reqType=" << _reqType << " repType=" << _repType << "\n";
   std::string responserAddr;
   std::string responserId;
   SrvAddresses_M addresses;
@@ -1341,13 +1335,10 @@ void NodeShared::OnEndRegistration(const MessagePublisher &_pub)
 //////////////////////////////////////////////////
 bool NodeShared::InitializeSockets()
 {
-  std::cerr << "NodeShared::InitializeSockets() starting...\n";
   try
   {
     // Set the hostname's ip address.
     this->hostAddr = this->dataPtr->msgDiscovery->HostAddr();
-    std::cerr << "NodeShared::InitializeSockets() hostAddr=" << this->hostAddr << "\n";
-
     // Publisher socket listening in a random port.
     std::string anyTcpEp = "tcp://" + this->hostAddr + ":*";
 
@@ -1504,7 +1495,6 @@ bool NodeShared::InitializeSockets()
     return false;
   }
 
-  std::cerr << "NodeShared::InitializeSockets() succeeded.\n";
   return true;
 }
 
