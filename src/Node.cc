@@ -827,11 +827,9 @@ bool Node::EnableStats(const std::string &_topic, bool _enable,
     return false;
   }
 
-  AdvertiseMessageOptions opts;
-  opts.SetMsgsPerSec(_publicationRate);
-  this->dataPtr->statPub = this->Advertise(_publicationTopic,
-      "ignition.msgs.Metric", opts);
-
+   AdvertiseMessageOptions opts;
+   opts.SetMsgsPerSec(_publicationRate);
+   this->dataPtr->statPub = this->Advertise<ignition::msgs::Metric>("/statistics");
   // Callback used to publish a statistics message.
   // cppcheck-suppress unreadVariable
   std::function<void(const TopicStatistics &_stats)> statCb =

@@ -251,6 +251,18 @@ namespace ignition
         return counter > 0;
       }
 
+      /// \brief Print all registered topics for diagnostics.
+      public: void PrintTopics() const {
+        for (const auto &kv : this->data)
+        {
+          std::cerr << "  handler topic: '" << kv.first << "'\n";
+          for (const auto &node : kv.second)
+            for (const auto &h : node.second)
+              std::cerr << "    reqType='" << h.second->ReqTypeName()
+                        << "' repType='" << h.second->RepTypeName() << "'\n";
+        }
+      }
+
       /// \brief Stores all the service call data for each topic. The key of
       /// _data is the topic name. The value is another map, where the key is
       /// the node UUID and the value is a smart pointer to the handler.
