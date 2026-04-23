@@ -284,13 +284,13 @@ namespace ignition
       // Documentation inherited.
       public: virtual std::string ReqTypeName() const
       {
-        return Req().GetTypeName();
+        return std::string(Req().GetTypeName());
       }
 
       // Documentation inherited.
       public: virtual std::string RepTypeName() const
       {
-        return Rep().GetTypeName();
+        return std::string(Rep().GetTypeName());
       }
 
       /// \brief Protobuf message containing the request's parameters.

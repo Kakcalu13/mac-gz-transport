@@ -140,18 +140,21 @@ namespace ignition
           return false;
         }
 
-#if GOOGLE_PROTOBUF_VERSION >= 4022000
-        auto msgReq =
-          google::protobuf::internal::DownCast<const Req*>(&_msgReq);
-        auto msgRep = google::protobuf::internal::DownCast<Rep*>(&_msgRep);
-#elif GOOGLE_PROTOBUF_VERSION > 2999999
-        auto msgReq = google::protobuf::down_cast<const Req*>(&_msgReq);
-        auto msgRep = google::protobuf::down_cast<Rep*>(&_msgRep);
-#else
-        auto msgReq =
-          google::protobuf::internal::down_cast<const Req*>(&_msgReq);
-        auto msgRep = google::protobuf::internal::down_cast<Rep*>(&_msgRep);
-#endif
+// yandere dev code alert!!!!!
+// #if GOOGLE_PROTOBUF_VERSION >= 4022000
+//         auto msgReq =
+//           google::protobuf::internal::DownCast<const Req*>(&_msgReq);
+//         auto msgRep = google::protobuf::internal::DownCast<Rep*>(&_msgRep);
+// #elif GOOGLE_PROTOBUF_VERSION > 2999999
+//         auto msgReq = google::protobuf::down_cast<const Req*>(&_msgReq);
+//         auto msgRep = google::protobuf::down_cast<Rep*>(&_msgRep);
+// #else
+//         auto msgReq =
+//           google::protobuf::internal::down_cast<const Req*>(&_msgReq);
+//         auto msgRep = google::protobuf::internal::down_cast<Rep*>(&_msgRep);
+// #endif
+       auto *msgReq = static_cast<const Req *>(&_msgReq);
+       auto *msgRep = static_cast<Rep *>(&_msgRep);
 
         return this->cb(*msgReq, *msgRep);
       }
@@ -192,13 +195,13 @@ namespace ignition
       // Documentation inherited.
       public: virtual std::string ReqTypeName() const
       {
-        return Req().GetTypeName();
+        return std::string(Req().GetTypeName());
       }
 
       // Documentation inherited.
       public: virtual std::string RepTypeName() const
       {
-        return Rep().GetTypeName();
+        return std::string(Rep().GetTypeName());
       }
 
       /// \brief Create a specific protobuf message given its serialized data.
